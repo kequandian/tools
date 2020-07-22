@@ -1,0 +1,106 @@
+#!/usr/bin/perl
+
+if(@ARGV != 1){
+    print "Usage:\n";
+    print "   jd  <jar-file>\n";
+    exit(0);
+}
+my $jd_single = $0;
+$jd_single =~ s/\/\w+$//; 
+$jd_single = "$jd_single/jd-single.sh";
+
+my $jarFile = shift @ARGV;
+$jarFile =~ s/[\r\n]+$//;
+if(!(-f $jarFile)){
+   print "$jarFile not exists\n";
+   exit(0);
+}
+
+## make output dir
+my $target = $jarFile;
+$target =~ s/\.jar//;
+if(-d $target){
+}else{
+  mkdir $target, 0755; 
+}
+
+my @files = `jar tf $jarFile`;
+
+#my $stop=0;
+foreach(@files){
+    if(!(/\.class/)){
+       #print;
+       next;
+    }
+	
+    print;
+    #chomp return
+    s/[\r\n]+$//;
+
+    my $classFile = $_;
+    my $javaFile = $_;
+    $javaFile =~ s/\.class$/\.java/;
+    $javaFile = "$target/$javaFile";
+
+    my $content = `$jd_single $jarFile $classFile`;
+    #print $content;
+
+    my $javaPath = $javaFile;
+    $javaPath =~ s/[\$\w]+\.java$//;
+    if(!(-d $javaPath)){
+       make_path($javaPath);
+    }
+
+    # save java content
+    open my $fh, ">", $javaFile;
+    print $fh $content;
+    close $fh;
+	
+    #for debug
+    #$stop ++;
+    #if($stop==3){exit(0);}
+}
+
+
+sub make_path{
+   my ($path) = @_;
+   
+   my @paths = split_path($path);
+   foreach(@paths){
+       if(!(-d $_)){
+          mkdir $_, 0755;
+       }
+   }
+}
+
+sub split_path{
+   my ($path) = @_;
+   my $is_abs = undef;
+   if($path =~ /^\//){
+      $is_abs = 1;
+   }
+
+   my @ss = split(/\//, $path);
+
+   my @paths;
+   $path = undef;
+   foreach(@ss){
+      if(!(/\w+/)){
+         next;
+      }
+      if(!$path){
+          if($is_abs){
+	     $path = "/$_"; 
+	  }else{
+	     $path = $_;
+	  }
+      }else{
+          $path = "$path/$_";
+      }
+      
+      push(@paths, $path);
+   }
+
+   return @paths;
+}
+

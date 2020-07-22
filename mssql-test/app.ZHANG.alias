@@ -1,0 +1,1 @@
+alias mssql-test='java -Djava.ext.dirs=./libs -cp ./build/libs/mssql-test.jar MssqlTest "jdbc:sqlserver://120.24.235.88:1433;DatabaseName=ServerDTUInfo" "sa" "zb2014"'

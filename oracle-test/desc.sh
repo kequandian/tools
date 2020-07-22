@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+java -cp ./build/libs/oracle-test.jar:./libs/ojdbc14-10.2.0.4.0.jar OracleTest "jdbc:oracle:thin:@192.168.1.247:1521/topprod" ssww ssww "select t1.column_name,substr(data_type||'('||data_length||')', 0, 20) as data_type,   decode(nullable,'N','NOT NULL', '') as null_status, commentsfrom user_tab_columns t1, user_col_comments t2 where t1.table_name = t2.table_name and t1.column_name = t2.column_name and t1.table_name = 'TABLENAME' ORDER BY COLUMN_ID" 

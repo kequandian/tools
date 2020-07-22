@@ -1,0 +1,7 @@
+## source connecion string
+export sconn="jdbc:mysql://112.74.26.228/star?useUnicode=true&characterEncoding=utf-8&user=jfeat&password=jfeat"
+## dest connection
+export dconn="jdbc:mysql://192.168.2.8/star?useUnicode=true&characterEncoding=utf-8&user=root&password=root"
+## source where condition
+export swhere=
+

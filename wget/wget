@@ -1,0 +1,11 @@
+#!/bin/sh
+
+url=$1
+
+if [ ! $url ];then
+   echo "Usage: $0 <url>"
+   exit 0
+fi
+
+java -cp ./build/libs/wget.jar Wget $url
+

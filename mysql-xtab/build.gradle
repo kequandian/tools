@@ -1,0 +1,20 @@
+apply plugin: 'java'
+version = ''
+jar.baseName = 'mysqlxtab'
+
+sourceSets {
+    main {
+        java.srcDirs = ['src']
+    }
+}
+
+dependencies{
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'MySqlXTab'
+    }
+}
+

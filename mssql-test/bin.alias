@@ -1,0 +1,2 @@
+alias run='./run_sql.sh'
+alias runit='./run_sql_with.pl'

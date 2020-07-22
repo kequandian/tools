@@ -1,0 +1,18 @@
+apply plugin: 'java'
+
+jar.baseName = 'hello'
+
+sourceSets {
+   main.java {
+       srcDirs=['.']
+       exclude 'src/**/*.java'
+   }
+}
+
+tasks.build.doLast{
+    copy {
+       from 'build/libs'
+       into  '.' 
+       include '*.jar'
+    }
+}

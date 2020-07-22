@@ -1,0 +1,1 @@
+alias oracle-test='java -cp ./build/libs/oracle-test.jar:/e/ssww/tools/oracle-test/libs/ojdbc14-10.2.0.4.0.jar OracleTest "jdbc:oracle:thin:@192.168.1.247:1521/topprod" ssww ssww'
