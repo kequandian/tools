@@ -33,7 +33,7 @@ public class GetDistinctByLine {
                 list_1.stream().filter(s -> !list_2.contains(s)).forEach(s -> list.add(file_1.getName().concat("\t>>>>>>>>>>>>>> \t").concat(s)));
                 list_2.stream().filter(s -> !list_1.contains(s)).forEach(s -> list.add(file_2.getName().concat("\t>>>>>>>>>>>>>> \t").concat(s)));
                 if (writeContext(outFile, list)) {
-                    System.out.println("Success.");
+                    System.out.println("Success output to ".concat(outFile.getAbsolutePath()).concat("."));
                     System.exit(0);
                 }
             }
