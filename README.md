@@ -1,10 +1,13 @@
 ## How to decompile .class or .jar via cfr-0.140.jar
 ```
-Usage: java -jar cfr-0.140.jar <target .jar or .class>
-  e.g. java -jar cfr-0.140.jar mall-meice-1.0.0.jar  ## decompile all the .class file within .jar package.
+Usage: java -jar cfr-0.140.jar <.jar|.class>
   e.g. 
-   $ jar xf mall-meice-1.0.0.jar com/jfeat/sample/SampleServiceImpl.class ## extra .class file from .jar first
-   java -jar cfr-0.140.jar com/jfeat/sample/SampleServiceImpl.class  ## decompile the .class file
+   $ ## decompile all the .class file within .jar package.
+   $ java -jar cfr-0.140.jar mall-meice-1.0.0.jar
+   $ ## extra .class file from .jar first
+   $ jar xf mall-meice-1.0.0.jar com/jfeat/sample/SampleServiceImpl.class 
+   $ ## decompile the .class file
+   $ java -jar cfr-0.140.jar com/jfeat/sample/SampleServiceImpl.class
 ```
 
 ## How to build jar artifact via intellij
