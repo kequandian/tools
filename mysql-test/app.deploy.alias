@@ -1,0 +1,1 @@
+alias mysql-test='java -cp ./build/libs/mysql-test.jar:./libs/mysql-connector-java-5.1.5-bin.jar MySqlTest "jdbc:mysql://112.74.26.228/star?useUnicode=true&characterEncoding=utf-8&user=root&password=rootAZaz123"'

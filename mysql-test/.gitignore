@@ -1,0 +1,8 @@
+*.iml
+.gradle/
+.idea/
+build/
+mysql-test.alias
+local.properties
+mysql-test/
+
