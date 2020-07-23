@@ -1,8 +1,6 @@
-How to build jar artifact
+## How to build jar artifact
 
-How to build jar artifact
-
-Preparation:
+#### Preparation:
 1# Project Structure
 2# Platform Settings -> Global Libraries -> Add Java Libraries
    * Add all jar libraies in project libs dir
