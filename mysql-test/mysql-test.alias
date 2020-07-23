@@ -1,0 +1,5 @@
+dir=$(dirname $0)
+host='127.0.0.1'
+#host='120.79.77.207'
+#db='/test'
+alias mysql-test='java -cp $dir/build/libs/mysql-test.jar:$dir/libs/mysql-connector-java-5.1.5-bin.jar MySqlTest "jdbc:mysql://$host$db?useUnicode=true&characterEncoding=utf-8&user=root&password=root"'

@@ -73,10 +73,15 @@ public class MySqlTest {
             BufferedReader br = new BufferedReader(isr);
 
             String line = null;
+            String commentSymbol = "--";
             while ((line = br.readLine()) != null) {
+                if(line.startsWith(commentSymbol)){
+                    continue;
+                }
                 builder.append(line.trim());
                 builder.append(" ");
             }
+
             br.close();
         }catch (FileNotFoundException e){
             e.printStackTrace();
@@ -101,7 +106,7 @@ public class MySqlTest {
             System.out.println(" java -cp mysql-test.jar <conn-str> <sql> [param]");
             System.out.println("\n");
             System.out.println("Example:");
-            System.out.println(" java -cp mysql-test.jar \"jdbc:mysql://localhost/test?user=root&password=root\" \"select now()\"");
+            System.out.println(" java -cp mysql-test.jar \"jdbc:mysql://localhost/db?user=root&password=root&characterEncoding=utf8\" \"select now()\"");
             System.out.println("");
             return;
         }
