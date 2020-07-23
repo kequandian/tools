@@ -1,0 +1,26 @@
+//https://docs.gradle.org/current/userguide/application_plugin.html
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+    mavenCentral()
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ['src']
+    }
+}
+
+dependencies{
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    compile 'org.apache.shiro:shiro-core:1.4.0'
+//    compile "commons-codec:commons-codec:1.9"
+    compile "org.apache.commons:commons-lang3:3.4"
+}
+
+// jar
+mainClassName = "com.support.GenToken"
+
+// Usage:
+//$ gradle distZip

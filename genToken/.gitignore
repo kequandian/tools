@@ -1,0 +1,17 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+.idea/
+.gradle/
+
+# production
+out/
+build/
+
+*.iml
+src/META-INF/
+
+# misc
+.DS_Store
+npm-debug.log*
+
