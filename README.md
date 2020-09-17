@@ -1,15 +1,15 @@
 ## How to decompile .class or .jar via cfr-0.150.jar
-> [Download cfr-0.15.0](https://github.com/leibnitz27/cfr/releases/download/0.150/cfr-0.150.jar)
+> [Download cfr-0.150.0](https://github.com/leibnitz27/cfr/releases/download/0.150/cfr-0.150.jar)
 
 ```shell
-Usage: java -jar cfr-0.140.jar <.jar|.class>
+Usage: java -jar cfr-0.150.jar <.jar|.class>
   e.g. 
    $ ## decompile all the .class file within .jar package.
-   $ java -jar cfr-0.140.jar mall-meice-1.0.0.jar
+   $ java -jar cfr-0.150.jar mall-meice-1.0.0.jar
    $ ## extra .class file from .jar first
    $ jar xf mall-meice-1.0.0.jar com/jfeat/sample/SampleServiceImpl.class 
    $ ## decompile the .class file
-   $ java -jar cfr-0.140.jar com/jfeat/sample/SampleServiceImpl.class
+   $ java -jar cfr-0.150.jar com/jfeat/sample/SampleServiceImpl.class
 ```
 
 ## How to build jar artifact via intellij
