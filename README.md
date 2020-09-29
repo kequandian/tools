@@ -12,6 +12,36 @@ Usage: java -jar cfr-0.150.jar <.jar|.class>
    $ java -jar cfr-0.150.jar com/jfeat/sample/SampleServiceImpl.class
 ```
 
+## How to build jar artifact via maven plugin
+```
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-assembly-plugin</artifactId>
+    <version>3.2.0</version>
+    <configuration>
+        <appendAssemblyId>false</appendAssemblyId>
+        <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+        </descriptorRefs>
+        <archive>
+            <manifest>
+                <!-- application entry -->
+                <mainClass>com.jfeat.cg.cli.Main</mainClass>
+            </manifest>
+        </archive>
+    </configuration>
+    <executions>
+        <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+                <goal>single</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
 ## How to build jar artifact via intellij
 
 #### Preparation:
