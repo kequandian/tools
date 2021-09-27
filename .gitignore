@@ -3,6 +3,8 @@
 .svn/
 .settings
 overlays/
+.classpath
+.project
 dist/
 out/
 build/
@@ -15,4 +17,4 @@ api/app.endpoint
 api/app.token
 target/
 .DS_Store
-
+*.jar

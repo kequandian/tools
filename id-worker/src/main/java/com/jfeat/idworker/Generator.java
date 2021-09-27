@@ -1,4 +1,4 @@
-package com.jfeat.idworker;
+package com.jfeat.tools.checksum;
 
 import com.baomidou.mybatisplus.toolkit.IdWorker;
 
