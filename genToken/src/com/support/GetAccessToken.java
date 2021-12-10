@@ -91,10 +91,9 @@ public class GetAccessToken {
         byte[] hashToken = sha1(password.getBytes(), salt, HASH_INTERATIONS);
         data.put("token", encodeHex(hashToken));
 
-        ObjectMapper mapper = new ObjectMapper(); //转换器
+        ObjectMapper mapper = new ObjectMapper();
 
-        //测试01：对象--json
-        String dataJson=mapper.writeValueAsString(data); //map转json
+        String dataJson=mapper.writeValueAsString(data);
         return encodeBase64(dataJson.getBytes());
     }
 

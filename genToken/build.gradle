@@ -1,6 +1,5 @@
 //https://docs.gradle.org/current/userguide/application_plugin.html
 apply plugin: 'java'
-apply plugin: 'application'
 
 repositories {
     mavenCentral()
@@ -13,14 +12,21 @@ sourceSets {
 }
 
 dependencies{
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile 'org.apache.shiro:shiro-core:1.4.0'
-//    compile "commons-codec:commons-codec:1.9"
-    compile "org.apache.commons:commons-lang3:3.4"
+    implementation  fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation  'org.apache.shiro:shiro-core:1.4.0'
+//    implementation  "commons-codec:commons-codec:1.9"
+    implementation  "org.apache.commons:commons-lang3:3.4"
 }
 
-// jar
-mainClassName = "com.support.GenToken"
-
-// Usage:
-//$ gradle distZip
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.support.GenToken'
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier = "all"
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
