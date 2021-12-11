@@ -90,11 +90,12 @@ public class GenToken {
     public static void printUsageAndExit() {
         System.out.println("Usage: genToken <orgId> <userId> <account> <expireTimes>");
         System.out.println("       genToken get password <password> <salt>");
-        System.out.println("       genToken access <id> <loginName> <password> <salt>");
+        //System.out.println("       genToken access <id> <loginName> <password> <salt>");
         System.out.println("Param:");
         System.out.println("expireTimes  --Milliseconds, support unit are s:second m:minute h:hour d:day");
         System.out.println("e.g. genToken 1 admin 259200000  ## equals 72 hours");
         System.out.println("     genToken 1 admin 72h        ## means 72 hours");
+        System.out.println("     genToken get password 123456 834232");
         System.exit(1);
     }
 
