@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.security.MessageDigest;
 
-public class GetAccessToken {
+public class GenAccessToken {
     public static void printUsageAndExit() {
         System.out.println("Usage: getAccessToken <id> <loginName> <password> <salt>");
         System.exit(1);
