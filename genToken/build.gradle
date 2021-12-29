@@ -19,6 +19,7 @@ dependencies{
     implementation  "javax.xml.bind:jaxb-api:2.3.0"
 }
 
+
 jar {
     manifest {
         attributes(
@@ -27,6 +28,7 @@ jar {
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveClassifier = "all"
+    version = 1.0
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
