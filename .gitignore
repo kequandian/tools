@@ -13,6 +13,7 @@ build/
 *.log
 *.db
 *.class
+gradle/
 api/app.endpoint
 api/app.token
 target/
