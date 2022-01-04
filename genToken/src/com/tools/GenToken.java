@@ -101,14 +101,15 @@ public class GenToken {
 //        System.exit(1);
     }
 
-    public static String getRandomSalt(int length, int upperChars, int symbolChars) {
-        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
+    public static String getRandomSalt(int length, int upperChars, int digitChars, int symbolChars) {
+        String base = "abcdefghijklmnopqrstuvwxyz";
+        String base09 = "0123456789";
         String BASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String BaSe = "~!@#$%._";
+        String BaSe = "~!@#$%.";
         Random random = new Random();
         StringBuffer sb = new StringBuffer();
 
-        length = length - upperChars - symbolChars;
+        length = length - upperChars - digitChars - symbolChars;
         for (int i = 0; i < length; ++i) {
             int number = random.nextInt(base.length());
             sb.append(base.charAt(number));
@@ -117,15 +118,28 @@ public class GenToken {
         // insert with BASE
         for (int i = 0; i < upperChars; ++i) {
             int NUMBER = random.nextInt(BASE.length());
-            int INDEX = random.nextInt(length);
+            int INDEX = random.nextInt(length+i);
             sb.insert(INDEX, BASE.charAt(NUMBER));
         }
 
+        // digit
+        length = length+upperChars;
+        for (int i = 0; i < digitChars; ++i) {
+            int NUMBER = random.nextInt(base09.length());
+
+            int INDEX = random.nextInt(length+i);
+                INDEX = Math.max(1, INDEX);
+            sb.insert(INDEX, base09.charAt(NUMBER));
+        }
+
         // insert with symbol
+        length = length+digitChars;
         for (int i = 0; i < symbolChars; ++i) {
-            int NuMbeR = random.nextInt(BaSe.length());
-            int InDeX = random.nextInt(length);
-            sb.insert(InDeX, BaSe.charAt(NuMbeR));
+            int SYMBOL = random.nextInt(BaSe.length());
+
+            int InDeX = random.nextInt(length+i);
+                InDeX = Math.max(1, InDeX);
+            sb.insert(InDeX, BaSe.charAt(SYMBOL));
         }
 
         return sb.toString();
@@ -145,13 +159,14 @@ public class GenToken {
         /**
          * gen random salt
          */
-        if (args != null && (args.length == 3 || args.length ==4 || args.length==5 || args.length==6) && (args[0]+args[1]+args[2]).compareTo("genrandomsalt") == 0) {
+        if (args != null && (args.length == 3 || args.length ==4 || args.length==5 || args.length==6 || args.length==7) && (args[0]+args[1]+args[2]).compareTo("genrandomsalt") == 0) {
             try {
-                int len = args.length == 3 ? 5 : Integer.parseInt(args[3]);
-                int LEN = args.length == 5 ? Integer.parseInt(args[4]) : 0;
-                int LeN = args.length == 6 ? Integer.parseInt(args[5]) : 0;
+                int len = args.length >= 4 ? Integer.parseInt(args[3]) : 5;
+                int LEN = args.length >= 5 ? Integer.parseInt(args[4]) : 0;
+                int Len09 = args.length >= 6 ? Integer.parseInt(args[5]) : 0;
+                int LeN = args.length >= 7 ? Integer.parseInt(args[6]) : 0;
 
-                String salt = getRandomSalt(len, LEN, LeN);
+                String salt = getRandomSalt(len, LEN, Len09, LeN);
                 System.out.println(salt);
                 return;
             }catch (IllegalFormatException ex){
@@ -164,7 +179,7 @@ public class GenToken {
          */
         if (args != null && (args.length == 3 || args.length ==4) && (args[0]+args[1]).compareTo("genpassword") == 0) {
             String password = args[2];
-            String salt = args.length==4 ? args[3] : getRandomSalt(5, 0, 0);
+            String salt = args.length==4 ? args[3] : getRandomSalt(5, 0, 0, 0);
             if (password.length() == 0) {
                 printUsageAndExit();
                 return;
