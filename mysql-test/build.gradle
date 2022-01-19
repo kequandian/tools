@@ -1,6 +1,13 @@
 //https://docs.gradle.org/current/userguide/application_plugin.html
-apply plugin: 'java'
-apply plugin: 'application'
+//apply plugin: 'java'
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
 
 sourceSets {
     main {
@@ -9,11 +16,69 @@ sourceSets {
 }
 
 dependencies{
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    // implementation  fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation  'org.apache.shiro:shiro-core:1.4.0'
+//    implementation  "commons-codec:commons-codec:1.9"
+implementation  "mysql:mysql-connector-java:8.0.27"
+    implementation  "org.apache.commons:commons-lang3:3.4"
+    implementation  "javax.xml.bind:jaxb-api:2.3.0"
 }
 
-// jar
-mainClassName = "MySqlTest"
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.tools.MySqlTest'
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier = "all"
+    version = 1.0
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 
-// Usage:
-//$ gradle distZip
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'org.gradle.sample'
+            artifactId = 'library'
+            version = '1.1'
+
+            from components.java
+        }
+    }
+}
+
+publishing {
+    publications {
+
+        repositories.maven {
+//            maven {
+                url 'http://git.smallsaas.cn:8081/repository/internal'
+                allowInsecureProtocol true
+                credentials {
+                    username "dev"
+                    password "dev123"
+                }
+//            }
+        }
+
+//        maven(MavenPublication) {
+//                artifact sourceJar // Publish the output of the sourceJar task
+//                artifact 'mysql-test-1.0-all.jar' // Publish a file created outside of the build
+//                artifact source: sourceJar, classifier: 'src', extension: 'zip'
+//        }
+
+         maven(MavenPublication) {
+//             artifacts {
+                 groupId 'com.tools'
+                 artifactId 'mysql-test'
+                 version '1.0'
+                 artifact 'build/libs/mysql-test-1.0-all.jar'
+//             }
+         }
+    }
+}
+
+

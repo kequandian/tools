@@ -1,0 +1,19 @@
+//https://docs.gradle.org/current/userguide/application_plugin.html
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceSets {
+    main {
+        java.srcDirs = ['src']
+    }
+}
+
+dependencies{
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+// jar
+mainClassName = "MySqlTest"
+
+// Usage:
+//$ gradle distZip
