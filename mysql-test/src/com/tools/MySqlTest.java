@@ -129,7 +129,8 @@ public class MySqlTest {
         if(sql.length()==0){
             System.err.println("no sql to run !");
             return;
-        } System.err.println("sql= " + sql);
+        }
+//        System.err.println("sql= " + sql);
 
 
         // if no connection string, get connection from mysql-test.rc
