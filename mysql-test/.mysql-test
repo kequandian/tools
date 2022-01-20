@@ -1,0 +1,1 @@
+jdbc:mysql://sh-cdb-q5vnc0iy.sql.tencentcdb.com:59449/nft?autoReconnect=true&useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&user=root&password=zb2014@888

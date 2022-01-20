@@ -1,6 +1,8 @@
 package com.tools;
 
 import java.io.*;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
 import java.sql.*;
 
 public class MySqlTest {
@@ -103,9 +105,10 @@ public class MySqlTest {
     }
 
     public static void main(String[] args) {
-        if (args.length < 2) {
+        if (args==null || args.length < 1 || (args[0].startsWith("jdbc:mysql://")&&args.length<2)) {
             System.out.println("Usage:");
             System.out.println(" java -cp mysql-test.jar <conn-str> <sql> [param]");
+            System.out.println(" java -cp mysql-test.jar <sql> [param]");
             System.out.println("\n");
             System.out.println("Example:");
             System.out.println(" java -cp mysql-test.jar \"jdbc:mysql://localhost/db?user=root&password=root&characterEncoding=utf8\" \"select now()\"");
@@ -113,8 +116,31 @@ public class MySqlTest {
             return;
         }
 
-        String conn_str = args[0];
-        String sql = args[1];
+        final String DRIVER_KEY_STRING=  "jdbc:mysql://";
+        String arg0 = args[0];
+        String conn_str = arg0.startsWith(DRIVER_KEY_STRING) ? arg0 : "";
+        String sql = conn_str.length()==0 ? arg0 : args[1];
+
+        // if no connection string, get connection from mysql-test.rc
+        if(conn_str.length()==0) {
+            CodeSource codeSource = MySqlTest.class.getProtectionDomain().getCodeSource();
+            File jarFile = null;
+            try {
+                jarFile = new File(codeSource.getLocation().toURI().getPath());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();e.printStackTrace();
+            }
+            String jarDir = jarFile.getParentFile().getAbsolutePath();
+            File file = new File(String.join(File.separator, jarDir, ".mysql-test"));
+            if (!file.exists()) {
+                System.out.println(file.getPath() + " not exits!");
+                return;
+            }
+            conn_str = readFile(file).trim();
+            if (conn_str.indexOf(DRIVER_KEY_STRING)>0) {
+                conn_str = conn_str.substring(conn_str.indexOf(DRIVER_KEY_STRING));
+            }
+        }
 
         // get params replace in sql
         String[] params = null;
@@ -129,6 +155,7 @@ public class MySqlTest {
         if(fin.isFile()) {
             sql = readFile(fin);
         }
+        sql = sql.trim();
 
         // replace params in sql
         if(params!=null){
@@ -140,14 +167,28 @@ public class MySqlTest {
 
         MySqlTest test = new MySqlTest(conn_str);
         String firstWord = sql.contains(" ")?sql.substring(0, sql.indexOf(' ')):null;
+        firstWord = trim(firstWord, new char[]{'\"', '\''});
 
         if(firstWord!=null) {
             if (firstWord.equalsIgnoreCase("select") || firstWord.equalsIgnoreCase("show")) {
-                test.handleResult(sql);
+                test.handleResult(trim(sql, new char[]{'\"', '\''}));
             } else {
-                test.executeUpdate(sql);
+                test.executeUpdate(trim(sql, new char[]{'\"', '\''}));
             }
         }
+    }
+
+    private static String trim(String str, char[] trims){
+        for(Character c : trims){
+            if(str.startsWith(c.toString())){
+                str = str.substring(1);
+
+                if(str.endsWith(c.toString())){
+                    str = str.substring(0,str.length()-1);
+                }
+            }
+        }
+        return str;
     }
 
     private void handleResult(String sql){
