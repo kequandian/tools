@@ -10,7 +10,7 @@ public class MySqlTest {
 
     public MySqlTest(String connStr) {
         try {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection(connStr);
 
         } catch (Exception e) {
