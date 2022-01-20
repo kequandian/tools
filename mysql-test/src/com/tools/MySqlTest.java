@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.sql.*;
+import java.util.Locale;
 
 public class MySqlTest {
    //String connStr = "jdbc:mysql://localhost/codepilot?user=root&password=root";
@@ -120,6 +121,16 @@ public class MySqlTest {
         String arg0 = args[0];
         String conn_str = arg0.startsWith(DRIVER_KEY_STRING) ? arg0 : "";
         String sql = conn_str.length()==0 ? arg0 : args[1];
+        if(sql==null){
+            System.err.println("no sql to run !");
+            return;
+        }
+        sql = sql.strip();
+        if(sql.length()==0){
+            System.err.println("no sql to run !");
+            return;
+        } System.err.println("sql= " + sql);
+
 
         // if no connection string, get connection from mysql-test.rc
         if(conn_str.length()==0) {
@@ -136,7 +147,7 @@ public class MySqlTest {
                 System.out.println(file.getPath() + " not exits!");
                 return;
             }
-            conn_str = readFile(file).trim();
+            conn_str = readFile(file).strip();
             if (conn_str.indexOf(DRIVER_KEY_STRING)>0) {
                 conn_str = conn_str.substring(conn_str.indexOf(DRIVER_KEY_STRING));
             }
@@ -155,7 +166,7 @@ public class MySqlTest {
         if(fin.isFile()) {
             sql = readFile(fin);
         }
-        sql = sql.trim();
+        sql = sql.strip();
 
         // replace params in sql
         if(params!=null){
@@ -166,15 +177,13 @@ public class MySqlTest {
         }
 
         MySqlTest test = new MySqlTest(conn_str);
-        String firstWord = sql.contains(" ")?sql.substring(0, sql.indexOf(' ')):null;
-        firstWord = trim(firstWord, new char[]{'\"', '\''});
-
-        if(firstWord!=null) {
-            if (firstWord.equalsIgnoreCase("select") || firstWord.equalsIgnoreCase("show")) {
-                test.handleResult(trim(sql, new char[]{'\"', '\''}));
-            } else {
-                test.executeUpdate(trim(sql, new char[]{'\"', '\''}));
-            }
+        sql = trim(sql, new char[]{'\"', '\'',' '}).strip();
+        String lowerCaseSql = sql.toLowerCase();
+//        System.err.println("lowerCaseSql= " + lowerCaseSql);
+        if (lowerCaseSql.startsWith("select ") || lowerCaseSql.startsWith("show ")) {
+            test.handleResult(sql);
+        } else {
+            test.executeUpdate(sql);
         }
     }
 
