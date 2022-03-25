@@ -9,7 +9,7 @@ out/
 build/
 
 *.iml
-src/META-INF/
+META-INF/
 
 # misc
 .DS_Store
