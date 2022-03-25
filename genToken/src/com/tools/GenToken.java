@@ -88,17 +88,15 @@ public class GenToken {
         return encodedKey;
     }
 
-    public static void printUsageAndExit() {
-        System.out.println("Usage: genToken <orgId> <userId> <account> <expireTimes>");
+    public static void printUsage() {
+        System.out.println("Usage: genToken <orgId> <userId> <account> <ttl>");
         System.out.println("       genToken gen password <password> [salt]");
         System.out.println("       genToken gen random salt [length] [-upper] [-*]");
         //System.out.println("       genToken access <id> <loginName> <password> <salt>");
-//        System.out.println("Param:");
-//        System.out.println("expireTimes  --Milliseconds, support unit are s:second m:minute h:hour d:day");
-//        System.out.println("e.g. genToken 1 admin 259200000  ## equals 72 hours");
-//        System.out.println("     genToken 1 admin 72h        ## means 72 hours");
-//        System.out.println("     genToken gen password 123456 834232");
-//        System.exit(1);
+        System.out.println("Param:");
+        System.out.println("  ttl  support multi unit: m(minute) h(hour) d(day)");
+        System.out.println("  e.g. genToken 1 admin 259200000  ## equals 72 hours");
+        System.out.println("       genToken 1 admin 72h        ## means 72 hours");
     }
 
     public static String getRandomSalt(int length, int upperChars, int digitChars, int symbolChars) {
@@ -152,7 +150,7 @@ public class GenToken {
 
     public static void main(String[] args) {
         if (args == null || args.length==0) {
-            printUsageAndExit();
+            printUsage();
             return;
         }
 
@@ -181,7 +179,7 @@ public class GenToken {
             String password = args[2];
             String salt = args.length==4 ? args[3] : getRandomSalt(5, 0, 0, 0);
             if (password.length() == 0) {
-                printUsageAndExit();
+                printUsage();
                 return;
             }
 
@@ -192,7 +190,7 @@ public class GenToken {
         }
 
         if (args.length < 4 ) {
-            printUsageAndExit();
+            printUsage();
             return;
         }
 
