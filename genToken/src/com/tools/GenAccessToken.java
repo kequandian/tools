@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.security.MessageDigest;
 
+// jfinal biliya tomcat access
+@Deprecated
 public class GenAccessToken {
     public static void printUsageAndExit() {
         System.out.println("Usage: getAccessToken <id> <loginName> <password> <salt>");

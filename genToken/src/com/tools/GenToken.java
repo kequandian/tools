@@ -16,80 +16,17 @@ import java.util.IllegalFormatException;
 import java.util.Random;
 
 public class GenToken {
-    public static final String PREFIX = "jwt";
     private static final String encodedKey = "L7A/6zARSkK1j7Vd5SDD9pSSqZlqF7mAhiOgRbgv9Smce6tf4cJnvKOjtKPxNNnWQj+2lQEScm3XIUjhW+YVZg==";
-    private long ttlMillis = 2592000000L;  //30 days
-    private String tokenType = "Bearer";
-    private Boolean enableAttemptLogin = true;
-    private Boolean nonShiroPermissionCheck = false;
+    private static final String accessEncodedKey = "bm9ybWFsLWVuY29kZWQta2V5";
 
-    private static SignatureAlgorithm signatureAlgorithm;
-
-    public GenToken() {
-        signatureAlgorithm = SignatureAlgorithm.HS512;
-    }
-
-    public String createToken(Long orgId, Long userId, String account, Long expireTimes) {
-        return this.createJWT(orgId, userId, account, expireTimes);
-    }
-
-    public Claims parseToken(String token) {
-        try {
-            Claims claims = this.parseJWT(token);
-            return claims;
-        } catch (Exception var3) {
-            var3.printStackTrace();
-            return null;
-        }
-    }
-
-    private String createJWT(Long orgId, Long userId, String account, Long expireTimes) {
-        long nowMillis = System.currentTimeMillis();
-        Date now = new Date(nowMillis);
-        JwtBuilder builder = Jwts.builder().setHeaderParam("typ", "JWT");
-        if (orgId != null) {
-            builder.claim("orgId", orgId + "");
-        }
-        builder.claim("userId", userId + "")
-                .claim("account", account)
-                .setIssuedAt(now)
-                .setId(userId.toString())
-                .setSubject(account)
-                .signWith(getSignatureAlgorithm(), getSecretKey());
-        if (expireTimes >= 0L) {
-            long expMillis = nowMillis + expireTimes;
-            Date exp = new Date(expMillis);
-            builder.setExpiration(exp);
-        }
-        return builder.compact();
-    }
-
-    private Claims parseJWT(String jwt) throws Exception {
-        Claims claims = (Claims) Jwts.parser().setSigningKey(getSecretKey()).parseClaimsJws(jwt).getBody();
-        return claims;
-    }
-
-    private SignatureAlgorithm getSignatureAlgorithm() {
-        return this.signatureAlgorithm;
-    }
-
-    private Key deserializeKey(String encodedKey) {
-        byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
-        Key key = new SecretKeySpec(decodedKey, getSignatureAlgorithm().getJcaName());
-        return key;
-    }
-
-    private Key getSecretKey() {
-        return this.deserializeKey(encodedKey);
-    }
-
-    private String serializeKey(Key key) {
-        String encodedKey = Base64.getEncoder().encodeToString(key.getEncoded());
-        return encodedKey;
-    }
-
+    // private long ttlMillis = 2592000000L;  //30 days
+    // private String tokenType = "Bearer";
+    // private Boolean enableAttemptLogin = true;
+    // private Boolean nonShiroPermissionCheck = false;
+   
     public static void printUsage() {
         System.out.println("Usage: genToken <orgId> <userId> <account> <ttl>");
+        System.out.println("       genToken access <orgId> <userId> <account> <domainUserId> <ttl>");
         System.out.println("       genToken gen password <password> [salt]");
         System.out.println("       genToken gen random salt [length] [-upper] [-*]");
         //System.out.println("       genToken access <id> <loginName> <password> <salt>");
@@ -194,46 +131,81 @@ public class GenToken {
             return;
         }
 
+        if(args !=null && args.length==6 && args[0].equals("access")){
+            Long orgId = Long.valueOf(args[1]);
+            Long userId = Long.valueOf(args[2]);
+            String account = args[3];
+            String TTL = args[4];
+            String token = genToken(orgId, userId, account, TTL);
+            System.out.println(token);
+            return;
+        }
 
         /**
          * gen token
          */
-        JWTToken genToken = new JWTToken();
-
         Long orgId = args[0].length() > 0 ? Long.valueOf(args[0]) : null;
         Long userId = Long.valueOf(args[1]);
         String account = args[2];
-        String expireTimesString = args[3];
+        String ttlString = args[3];
+        String token = genToken(orgId, userId, account, ttlString);
+        System.out.println(token);
+    }
 
-        // get expireTimes
-        Long expireTimes = 0L;
+    private static String genToken(Long orgId, Long userId, String account, String ttlString){
+        JWTToken genToken = new JWTToken();
+
+        // get ttl
+        Long ttl = 0L;
         try {
-            expireTimes = Long.parseLong(expireTimesString);
+            ttl = Long.parseLong(ttlString);
         } catch (NumberFormatException e) {
-            expireTimes = Long.valueOf(args[3].substring(0, args[3].length() - 1));
-            String timeUnit = args[3].substring(args[3].length() - 1, args[3].length());
+            ttl = Long.valueOf(ttlString.substring(0, ttlString.length() - 1));
+            String timeUnit = ttlString.substring(ttlString.length() - 1, ttlString.length());
 
             if (timeUnit.equals("s")) {
-                expireTimes = expireTimes * 1000;
+                ttl = ttl * 1000;
             } else if (timeUnit.equals("m")) {
-                expireTimes = expireTimes * 60 * 1000;
+                ttl = ttl * 60 * 1000;
             } else if (timeUnit.equals("h")) {
-                expireTimes = expireTimes * 60 * 60 * 1000;
+                ttl = ttl * 60 * 60 * 1000;
             } else if (timeUnit.equals("d")) {
-                expireTimes = expireTimes * 24 * 60 * 60 * 1000;
+                ttl = ttl * 24 * 60 * 60 * 1000;
             }
         }
 
-        genToken.setTtlMillis(expireTimes).setEncodedKey(encodedKey);
+        genToken.setTtl(ttl).setEncodedKey(encodedKey);
         // end expiredTimes
 
+        return genToken.createToken(orgId, userId, account, 0, 1L, 0, "SYSTEM", 0L);
+    }
+
+
+    // TTL: ttl format 72h, 3d, etc
+    private static String genAccessToken(Long orgId, Long userId, String account, String TTL){
+        UserJWTToken genToken = new UserJWTToken();
+
+        // get ttl
+        Long ttl = 0L;
         try {
-            String token = genToken.createToken(orgId, userId, account, 0, 1L, 0, "SYSTEM", 0L);
-            System.out.println(token);
-            //System.out.println("token:" + genToken.parseToken(token));
-        } catch (NumberFormatException nfe) {
-            System.exit(1);
+            ttl = Long.parseLong(TTL);
+        } catch (NumberFormatException e) {
+            ttl = Long.valueOf(TTL.substring(0, TTL.length() - 1));
+            String timeUnit = TTL.substring(TTL.length() - 1, TTL.length());
+
+            if (timeUnit.equals("s")) {
+                ttl = ttl * 1000;
+            } else if (timeUnit.equals("m")) {
+                ttl = ttl * 60 * 1000;
+            } else if (timeUnit.equals("h")) {
+                ttl = ttl * 60 * 60 * 1000;
+            } else if (timeUnit.equals("d")) {
+                ttl = ttl * 24 * 60 * 60 * 1000;
+            }
         }
-        System.exit(0);
+
+        genToken.setTtl(ttl).setEncodedKey(accessEncodedKey);
+
+        return genToken.createToken(orgId, userId, account);
     }
 }
