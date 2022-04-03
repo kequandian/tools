@@ -10,8 +10,8 @@ import com.itextpdf.text.pdf.PdfStamper;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class PdfMask {
-    public static void maskPage(String pdfFilePath, int pageNumber, int startPos, int sizeInHeight)throws IOException, DocumentException {
+public class PdfCover {
+    public static void coverPage(String pdfFilePath, int pageNumber, int startPos, int sizeInHeight)throws IOException, DocumentException {
         String pdfFileName = pdfFilePath.substring(0, pdfFilePath.length()-".pdf".length());
         PdfReader reader = new PdfReader(pdfFilePath);
         PdfStamper stamp = new PdfStamper(reader, new FileOutputStream(String.format("%s-new.pdf",pdfFileName)));

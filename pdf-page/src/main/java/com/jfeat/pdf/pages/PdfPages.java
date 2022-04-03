@@ -88,7 +88,14 @@ public class PdfPages {
         canvas.addImage(image);
     }
 
-    public static  void  mergePages(String pdfFilePath, String mergePdfFielPath) throws IOException, DocumentException {
+    /**
+     * merge all pages for two pdf files
+     * @param pdfFilePath
+     * @param mergePdfFielPath
+     * @throws IOException
+     * @throws DocumentException
+     */
+    public static  void  mergePdfPages(String pdfFilePath, String mergePdfFielPath) throws IOException, DocumentException {
         PdfReader reader = new PdfReader(pdfFilePath);
         PdfReader mergeReader = new PdfReader(mergePdfFielPath);
 
@@ -110,6 +117,44 @@ public class PdfPages {
         stamper.close();
         reader.close();
         mergeReader.close();
+    }
+
+    /**
+     * merge two pages into one
+     * @param pdfFilePath
+     * @param pageNumber
+     * @param mergePdfFilePath
+     * @param mergePageNumber
+     * @throws IOException
+     * @throws DocumentException
+     */
+    public static  void  mergePages(String pdfFilePath, int pageNumber, String mergePdfFilePath, int mergePageNumber)
+            throws IOException, DocumentException {
+
+        PdfReader reader = new PdfReader(pdfFilePath);
+        String newPdfFile = StringUtils.removeExtension(pdfFilePath) + "-new.pdf";
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(newPdfFile));
+
+        PdfReader mergeReader = new PdfReader(mergePdfFilePath);
+        PdfImportedPage mergePage = stamper.getImportedPage(mergeReader, mergePageNumber);
+
+        PdfContentByte background = stamper.getOverContent(pageNumber);
+        background.addTemplate(mergePage, 0, 0);
+
+        stamper.close();
+        reader.close();
+        mergeReader.close();
+    }
+
+    public static void rotatePdf(String originalPdfFile, String outputPdfFile, int degrees) throws IOException, DocumentException {
+        PdfReader reader = new PdfReader(originalPdfFile);
+        for (int i = 1; i <= reader.getNumberOfPages(); i++) {
+            PdfDictionary dictionary = reader.getPageN(i);
+            dictionary.put(PdfName.ROTATE, new PdfNumber(degrees));
+        }
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(outputPdfFile));
+        stamper.close();
+        reader.close();
     }
 
     public static  void pickPage(String pdfFilePath, int[] pageNum) throws IOException, DocumentException {

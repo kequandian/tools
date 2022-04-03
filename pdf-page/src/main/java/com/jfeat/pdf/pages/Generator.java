@@ -20,6 +20,10 @@ public class Generator {
         System.out.println("       ");
         System.out.println("Page range support 1,2 [3-5], -1 mean last page.");
         System.out.println("OPTIONS:");
+        System.out.println(" -M,--Merge  merge two pdf into one pdf file");
+        System.out.println("             pdf-page <source> -M <pages.pdf>");
+        System.out.println(" -m,--merge  merge two pages into one page");
+        System.out.println("             pdf-page <source> -m <pages.pdf> <page-pick>  e.g. 1:2");
         System.out.println(" -h,--head   Head with images/pages.");
         System.out.println("             pdf-page <source> -h <image-url|image-dir|pages.pdf>");
         System.out.println(" -t,--tail   Tail up images/pages");
@@ -30,8 +34,8 @@ public class Generator {
         System.out.println("             pdf-page <source> -d <page-range>");
         System.out.println(" -s,--split  Split the .pdf into multi ones with certain number of pages.");
         System.out.println("             pdf-page <source> -s <pages>");
-        System.out.println(" -m,--mask   Mask specific area on page.");
-        System.out.println("             pdf-page <source> -m <page-number> <pos> <size>");
+        System.out.println(" -c,--cover  Cover specific area on page.");
+        System.out.println("             pdf-page <source> -c <page-number> <pos> <size>");
         System.out.println(" -r,--ruler  Draw a ruler on page.");
         System.out.println("             pdf-page <source> -r <page-number>");
         System.out.println(" -T,--text   Draw text on page.");
@@ -56,6 +60,7 @@ public class Generator {
         }
         String op = args.length > 1 ? args[1] : null;
         String param = args.length > 2 ? args[2] : null;
+        String param2 = args.length > 3 ? args[3] : null;
 
         try {
             if (op.equals("-h") || op.equals("--head")) {
@@ -67,25 +72,56 @@ public class Generator {
 
                 if (isFromWeb) {
                     imageUrls.add(url);
-                } else if(checkFile.exists()) {
-                    if(checkFile.isDirectory()){
+                } else if (checkFile.exists()) {
+                    if (checkFile.isDirectory()) {
                         File[] listOfFiles = checkFile.listFiles();
                         for (File f : listOfFiles) {
                             if (f.isFile()) {
                                 imageUrls.add(f.getAbsolutePath());
                             }
                         }
-                    }else{
+                    } else {
                         // insert images
                         imageUrls.add(url);
                     }
 
-                }else{
+                } else {
                     System.out.println("fatal: image file not exists: " + url);
                     return;
                 }
 
                 PdfPages.insertPage(pdfFilePath, imageUrls.toArray(new String[0]));
+
+            } else if (op.equals("-M") || op.equals("--Merge")){
+                String mergePdf = param;
+                PdfPages.mergePdfPages(pdfFilePath, mergePdf);
+
+            } else if (op.equals("-m") || op.equals("--merge")){
+                String mergePdf = param;
+                String rangePick = param2;
+                if(rangePick==null){
+                    rangePick = "1:1";
+                }
+
+                if(!rangePick.contains(":")){
+                    printUsage();
+                    return;
+                }
+                var ranges = rangePick.split(":");
+                if(ranges.length!=2){
+                    printUsage();
+                    return;
+                }
+
+                try {
+                    int num1 = Integer.parseInt(ranges[0]);
+                    int num2 = Integer.parseInt(ranges[1]);
+
+                    PdfPages.mergePages(pdfFilePath, num1, mergePdf, num2);
+                }catch (NumberFormatException e){
+                    printUsage();
+                    return;
+                }
 
             } else if (op.equals("-t") || op.equals("--tail")) {
                 /// tail up pages
@@ -123,7 +159,7 @@ public class Generator {
                 PdfPageNum.printPageNumber(pdfFilePath, pageNumber);
 
             }
-            else if (op.equals("-m") || op.equals("--mask")) {
+            else if (op.equals("-c") || op.equals("--cover")) {
                 if(args.length<5){
                     printUsage();
                     return;
@@ -132,7 +168,7 @@ public class Generator {
                 int pos = Integer.parseInt(args[3]);
                 int size = Integer.parseInt(args[4]);
 
-                PdfMask.maskPage(pdfFilePath, pageNumber, pos, size);
+                PdfCover.coverPage(pdfFilePath, pageNumber, pos, size);
 
             } else if (op.equals("-r") || op.equals("--ruler")) {
                 if (args.length < 3) {
