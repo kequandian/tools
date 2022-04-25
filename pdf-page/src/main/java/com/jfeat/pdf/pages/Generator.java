@@ -24,6 +24,8 @@ public class Generator {
         System.out.println("             pdf-page <source> -M <pages.pdf>");
         System.out.println(" -m,--merge  merge two pages into one page");
         System.out.println("             pdf-page <source> -m <pages.pdf> <page-pick>  e.g. 1:2");
+        System.out.println(" -a,--all    push all files (type of image) within path into one pdf file");
+        System.out.println("             pdf-page <source> -a <image-dir>");
         System.out.println(" -h,--head   Head with images/pages.");
         System.out.println("             pdf-page <source> -h <image-url|image-dir|pages.pdf>");
         System.out.println(" -t,--tail   Tail up images/pages");
@@ -58,12 +60,44 @@ public class Generator {
             System.out.println("invalid pdf: no an valid pdf file : " + pdfFilePath);
             return;
         }
+
         String op = args.length > 1 ? args[1] : null;
         String param = args.length > 2 ? args[2] : null;
         String param2 = args.length > 3 ? args[3] : null;
 
         try {
-            if (op.equals("-h") || op.equals("--head")) {
+            if (op.equals("-M") || op.equals("--Merge")){
+                String mergePdf = param;
+                PdfPages.mergePdfPages(pdfFilePath, mergePdf);
+
+            } else if (op.equals("-m") || op.equals("--merge")) {
+                String mergePdf = param;
+                String rangePick = param2;
+                if (rangePick == null) {
+                    rangePick = "1:1";
+                }
+
+                if (!rangePick.contains(":")) {
+                    printUsage();
+                    return;
+                }
+                String[] ranges = rangePick.split(":");
+                if (ranges.length != 2) {
+                    printUsage();
+                    return;
+                }
+
+                try {
+                    int num1 = Integer.parseInt(ranges[0]);
+                    int num2 = Integer.parseInt(ranges[1]);
+
+                    PdfPages.mergePages(pdfFilePath, num1, mergePdf, num2);
+                } catch (NumberFormatException e) {
+                    printUsage();
+                    return;
+                }
+
+            } else if (op.equals("-a") || op.equals("--all")) {
                 String url = param;
 
                 List<String> imageUrls = new ArrayList<>();
@@ -76,8 +110,15 @@ public class Generator {
                     if (checkFile.isDirectory()) {
                         File[] listOfFiles = checkFile.listFiles();
                         for (File f : listOfFiles) {
-                            if (f.isFile()) {
-                                imageUrls.add(f.getAbsolutePath());
+                            String filename = f.getName();
+                            if(!filename.contains(".")) continue;
+
+                            String ext = filename.substring(filename.indexOf("."));
+                            if(ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg")) {
+
+                                if (f.isFile()) {
+                                    imageUrls.add(f.getAbsolutePath());
+                                }
                             }
                         }
                     } else {
@@ -90,38 +131,40 @@ public class Generator {
                     return;
                 }
 
-                PdfPages.insertPage(pdfFilePath, imageUrls.toArray(new String[0]));
-
-            } else if (op.equals("-M") || op.equals("--Merge")){
-                String mergePdf = param;
-                PdfPages.mergePdfPages(pdfFilePath, mergePdf);
-
-            } else if (op.equals("-m") || op.equals("--merge")){
-                String mergePdf = param;
-                String rangePick = param2;
-                if(rangePick==null){
-                    rangePick = "1:1";
+                if(new File(pdfFilePath).exists()){
+                    PdfPages.insertPage(pdfFilePath, imageUrls.toArray(new String[0]));
+                }else{
+                    PdfPages.createPage(pdfFilePath, imageUrls.toArray(new String[0]));
                 }
 
-                if(!rangePick.contains(":")){
-                    printUsage();
-                    return;
-                }
-                var ranges = rangePick.split(":");
-                if(ranges.length!=2){
-                    printUsage();
-                    return;
-                }
+            } else if (op.equals("-h") || op.equals("--head")) {
+                    String url = param;
 
-                try {
-                    int num1 = Integer.parseInt(ranges[0]);
-                    int num2 = Integer.parseInt(ranges[1]);
+                    List<String> imageUrls = new ArrayList<>();
+                    boolean isFromWeb = ImageUtil.isFromWeb(url);
+                    File checkFile = new File(url);
 
-                    PdfPages.mergePages(pdfFilePath, num1, mergePdf, num2);
-                }catch (NumberFormatException e){
-                    printUsage();
-                    return;
-                }
+                    if (isFromWeb) {
+                        imageUrls.add(url);
+                    } else if (checkFile.exists()) {
+                        if (checkFile.isDirectory()) {
+                            File[] listOfFiles = checkFile.listFiles();
+                            for (File f : listOfFiles) {
+                                if (f.isFile()) {
+                                    imageUrls.add(f.getAbsolutePath());
+                                }
+                            }
+                        } else {
+                            // insert images
+                            imageUrls.add(url);
+                        }
+
+                    } else {
+                        System.out.println("fatal: image file not exists: " + url);
+                        return;
+                    }
+
+                    PdfPages.insertPage(pdfFilePath, imageUrls.toArray(new String[0]));
 
             } else if (op.equals("-t") || op.equals("--tail")) {
                 /// tail up pages
