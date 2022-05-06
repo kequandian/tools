@@ -19,3 +19,4 @@ api/app.token
 target/
 .DS_Store
 *.jar
+META-INF/

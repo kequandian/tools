@@ -21,29 +21,29 @@ public class Generator {
         System.out.println("Page range support 1,2 [3-5], -1 mean last page.");
         System.out.println("OPTIONS:");
         System.out.println(" -M,--Merge  merge two pdf into one pdf file");
-        System.out.println("             pdf-page <source> -M <pages.pdf>");
+        System.out.println("             e.g. pdf-page <source> -M <page2.pdf>");
         System.out.println(" -m,--merge  merge two pages into one page");
-        System.out.println("             pdf-page <source> -m <pages.pdf> <page-pick>  e.g. 1:2");
+        System.out.println("             e.g. pdf-page <source> -m <page2.pdf>");
         System.out.println(" -a,--all    push all files (type of image) within path into one pdf file");
-        System.out.println("             pdf-page <source> -a <image-dir>");
+        System.out.println("             e.g. pdf-page <source> -a <image-dir>");
         System.out.println(" -h,--head   Head with images/pages.");
-        System.out.println("             pdf-page <source> -h <image-url|image-dir|pages.pdf>");
+        System.out.println("             e.g. pdf-page <source> -h <image-url|image-dir|pages.pdf>");
         System.out.println(" -t,--tail   Tail up images/pages");
-        System.out.println("             pdf-page <source> -t <image-url|image-dir|pages.pdf>");
-        System.out.println(" -p,--pick   Pick up the range pages as new file.");
-        System.out.println("             pdf-page <source> -p <page-range>");
+        System.out.println("             e.g. pdf-page <source> -t <image-url|image-dir|pages.pdf>");
+        System.out.println(" -p,--pick   Pick up the range pages as new file.(page-range format: 1:2)");
+        System.out.println("             e.g. pdf-page <source> -p <page-range>");
         System.out.println(" -d,--delete Delete page.");
-        System.out.println("             pdf-page <source> -d <page-range>");
+        System.out.println("             e.g. pdf-page <source> -d <page-range>");
         System.out.println(" -s,--split  Split the .pdf into multi ones with certain number of pages.");
-        System.out.println("             pdf-page <source> -s <pages>");
+        System.out.println("             e.g. pdf-page <source> -s <pages>");
         System.out.println(" -c,--cover  Cover specific area on page.");
-        System.out.println("             pdf-page <source> -c <page-number> <pos> <size>");
+        System.out.println("             e.g. pdf-page <source> -c <page-number> <pos> <size>");
         System.out.println(" -r,--ruler  Draw a ruler on page.");
-        System.out.println("             pdf-page <source> -r <page-number>");
+        System.out.println("             e.g. pdf-page <source> -r <page-number>");
         System.out.println(" -T,--text   Draw text on page.");
-        System.out.println("             pdf-page <source> -t <page-number> <posx> <posy> <text> <LEFT|CENTER|RIGHT> <fontSize> [fontFamily]");
+        System.out.println("             e.g. pdf-page <source> -t <page-number> <posx> <posy> <text> <LEFT|CENTER|RIGHT> <fontSize> [fontFamily]");
         System.out.println(" -n,--number Number the page.");
-        System.out.println("             pdf-page <source> -n <page-number>");
+        System.out.println("             e.g. pdf-page <source> -n <page-number>");
     }
 
     public static void main(String[] args) {
