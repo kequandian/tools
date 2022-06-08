@@ -1,6 +1,7 @@
 .idea/
 .gradle/
 .svn/
+.vscode/
 .settings
 overlays/
 .classpath
