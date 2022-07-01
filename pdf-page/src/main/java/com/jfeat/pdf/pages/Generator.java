@@ -24,8 +24,8 @@ public class Generator {
         System.out.println("             e.g. pdf-page <source> -M <page2.pdf>");
         System.out.println(" -m,--merge  merge two pages into one page");
         System.out.println("             e.g. pdf-page <source> -m <page2.pdf>");
-        System.out.println(" -a,--all    push all files (type of image) within path into one pdf file");
-        System.out.println("             e.g. pdf-page <source> -a <image-dir>");
+        System.out.println(" -a,--all    push all files (type of image/pdf) within path into one pdf file");
+        System.out.println("             e.g. pdf-page <source> -a <image-dir|pdf-dir>");
         System.out.println(" -h,--head   Head with images/pages.");
         System.out.println("             e.g. pdf-page <source> -h <image-url|image-dir|pages.pdf>");
         System.out.println(" -t,--tail   Tail up images/pages");
@@ -100,12 +100,12 @@ public class Generator {
             } else if (op.equals("-a") || op.equals("--all")) {
                 String url = param;
 
-                List<String> imageUrls = new ArrayList<>();
+                List<String> fileUrls = new ArrayList<>();
                 boolean isFromWeb = ImageUtil.isFromWeb(url);
                 File checkFile = new File(url);
 
                 if (isFromWeb) {
-                    imageUrls.add(url);
+                    fileUrls.add(url);
                 } else if (checkFile.exists()) {
                     if (checkFile.isDirectory()) {
                         File[] listOfFiles = checkFile.listFiles();
@@ -114,16 +114,15 @@ public class Generator {
                             if(!filename.contains(".")) continue;
 
                             String ext = filename.substring(filename.indexOf("."));
-                            if(ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg")) {
-
+                            if(ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg") || ext.equals(".pdf")) {
                                 if (f.isFile()) {
-                                    imageUrls.add(f.getAbsolutePath());
+                                    fileUrls.add(f.getAbsolutePath());
                                 }
                             }
                         }
                     } else {
                         // insert images
-                        imageUrls.add(url);
+                        fileUrls.add(url);
                     }
 
                 } else {
@@ -132,9 +131,9 @@ public class Generator {
                 }
 
                 if(new File(pdfFilePath).exists()){
-                    PdfPages.insertPage(pdfFilePath, imageUrls.toArray(new String[0]));
+                    PdfPages.insertPage(pdfFilePath, fileUrls.toArray(new String[0]));
                 }else{
-                    PdfPages.createPage(pdfFilePath, imageUrls.toArray(new String[0]));
+                    PdfPages.createPage(pdfFilePath, fileUrls.toArray(new String[0]));
                 }
 
             } else if (op.equals("-h") || op.equals("--head")) {
