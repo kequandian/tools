@@ -1,6 +1,10 @@
 ## .pdf文档处理小工具
 `用于对pdf文件页进行处理，如增加页，删除页`
 
+## 合并pdf文件内容
+[how-to-move-the-content-inside-a-rectangle-inside-an-existing-pdf](
+https://kb.itextpdf.com/home/it5kb/faq/how-to-move-the-content-inside-a-rectangle-inside-an-existing-pdf)
+
 ```bash
 $ gradlew fatjar
 
