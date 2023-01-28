@@ -1,0 +1,8 @@
+## ignore the folders and files
+build/
+.gradle/
+out/
+/*.jar
+*.class
+.DS_Store
+

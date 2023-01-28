@@ -1,0 +1,38 @@
+#!/bin/sh
+
+#if [ $# == 0 ];then
+#   echo 'Usage:'
+#   echo "  $0  <plugin>"
+#   exit 0
+#fi
+#root=`readlink -e $(dirname $0)`
+
+root=$(dirname $0)
+root=$(perl -e 'use File::Spec; print File::Spec->rel2abs(@ARGV)' $root)
+plugin=$1
+
+if [ ! -z "$plugin" ];then
+   plugin=`echo "${plugin}" | sed 's/\/$//'`
+   plugin_root=${root}/${plugin}
+   echo ${plugin_root}
+else
+   plugin=$(basename $root)
+   plugin_root=${root}
+fi
+
+production=${plugin_root}/out/production/${plugin}
+#echo $production
+
+if [ -d $production ];then
+  cd ${production}
+
+  jar -cvf ${plugin}.jar .
+
+  mv ${plugin}.jar ${plugin_root}
+
+  #jar -cvf ${plugin}.jar ${plugin}/out/production
+  
+else
+    echo "$production not exist" 
+fi
+

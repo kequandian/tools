@@ -1,0 +1,26 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "device1",
+  "sn": "1432443242",
+  "sim_card_phone_no": "1388888888",
+  "amount": 0,
+  "imei": "234324324324",
+  "notes": "afafa",
+  "is_active": 1,
+  "sim_card_expire_date": "2016-10-10",
+  "service_expire_date": "2016-10-01",
+  "is_can_calibration": 1,
+  "is_can_modify_para": 1,
+  "version_no": "342",
+  "register_date": "2016-01-01",
+  "device_on": 1,
+  "temperature": "30",
+  "oxygen": "34",
+  "is_auto": 1,
+  "is_stop": 1,
+  "is_alert": 1,
+  "alert_code": 23,
+  "record_date": "2015-10-10 18:00:00"
+}
+

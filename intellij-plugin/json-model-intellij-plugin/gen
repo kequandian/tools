@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cp -r libs/org out/production/json-model-intellij-plugin
+
+./intellij-plugin-gen
