@@ -15,18 +15,42 @@
 
 2. 使用方法
 
-    1. ```
-        python3 scaleImage.py [-f|-d] [inputFile|inputDir] [outputFile|outputDir] [imageSize]
+    1. 查看帮助 -h
+
+        ```
+        python3 scaleImage.py -h
         ```
 
-        1. 示例
-            1. 压缩单个图片
-                1. python3 scaleImage.py -f test.jpg output.jpg 2048
-            2. 压缩目录图片
-                1. python3 scaleImage.py -d test output 2048
+    2. 压缩单图片 -f
 
-    2. 参数说明
+        ```
+        python3 scaleImage.py -f image.jpg
+        ```
 
-        1. -f 表示压缩单个图片 inputFile 表示需要压缩的文件，outputFile 表示压缩后的文件
-        2. -d 表示压缩整个目录里面的图片，inputDir表示需要压缩的文件夹，outputdir表示输出到目录文件夹
-        3. imageSIze 为可选参数 默认1024，表示图片压缩后不超过这个值，单位kb
+    3. 压缩目录图片 -d
+
+        ```
+        python3 scaleImage.py -f imageDir
+        ```
+
+    4. 重新压缩 -r
+
+        ```
+        python3 scaleImage.py -f imageDir -r
+        ```
+
+    5. 输出到指定文件夹
+
+        ```
+        python3 scaleImage.py -f imageDir -r -o outputDir
+        ```
+
+    6. 指定压缩大小 -s 默认1024kb 可填单位 m或M或g或G,kb不填单位直接填数字
+
+        ```
+        python3 scaleImage.py -f imageDir -r -o outputDir -s 2048
+        python3 scaleImage.py -f imageDir -r -o outputDir -s 2m
+        ```
+
+        
+
