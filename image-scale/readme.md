@@ -30,26 +30,26 @@
     3. 压缩目录图片 -d
 
         ```
-        python3 scaleImage.py -f imageDir
+        python3 scaleImage.py -d imageDir
         ```
 
     4. 重新压缩 -r
 
         ```
-        python3 scaleImage.py -f imageDir -r
+        python3 scaleImage.py -d imageDir -r
         ```
 
-    5. 输出到指定文件夹
+    5. 输出到指定文件夹 -o
 
         ```
-        python3 scaleImage.py -f imageDir -r -o outputDir
+        python3 scaleImage.py -d imageDir -r -o outputDir
         ```
 
     6. 指定压缩大小 -s 默认1024kb 可填单位 m或M或g或G,kb不填单位直接填数字
 
         ```
-        python3 scaleImage.py -f imageDir -r -o outputDir -s 2048
-        python3 scaleImage.py -f imageDir -r -o outputDir -s 2m
+        python3 scaleImage.py -d imageDir -r -o outputDir -s 2048
+        python3 scaleImage.py -d imageDir -r -o outputDir -s 2m
         ```
 
         
