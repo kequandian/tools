@@ -78,6 +78,8 @@ def isNumber(string):
     return bool(pattern.match(string))
 
 def unitConversion(imageSize):
+    if imageSize.endswith("kb") or imageSize.endswith("KB"):
+        return int(imageSize[:-2])
     if imageSize.endswith("m") or imageSize.endswith("M"):
         return int(imageSize[:-1])*1024
     if imageSize.endswith("g") or imageSize.endswith("G"):
