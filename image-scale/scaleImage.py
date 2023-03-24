@@ -106,7 +106,7 @@ def singlePictureCompress(filePath,isRaw,outPut,imageSize=1024):
             shutil.copy(filePath[:-4],outPut)
     if not (filePath.endswith(".raw") or os.path.exists(filePath + ".raw")):
         shutil.copy(filePath,filePath+".raw")
-    compress_image(outPut,imageSize)
+    compress_image(outPut,int(imageSize))
 
 if __name__ == '__main__':
 
