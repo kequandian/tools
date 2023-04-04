@@ -2,7 +2,7 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.jfeat</groupId>
+  <groupId>com.tools</groupId>
   <artifactId>pdf-page</artifactId>
   <version>1.0</version>
   <name>Pdf Page Removal</name>
@@ -83,4 +83,12 @@
     </plugin>
     </plugins>
   </build>
+
+  <distributionManagement>
+    <repository>
+        <id>archiva-internal</id>
+        <name>Internal Repository</name>
+        <url>http://120.79.49.72:8081/repository/internal</url>
+    </repository>
+</distributionManagement>
 </project>
