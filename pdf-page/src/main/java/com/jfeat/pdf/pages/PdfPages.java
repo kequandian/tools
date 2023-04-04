@@ -6,7 +6,6 @@ import com.itextpdf.text.pdf.*;
 import com.jfeat.pdf.pages.util.StringUtils;
 
 import com.jfeat.pdf.pages.util.ImageUtil;
-import com.jfeat.pdf.pages.util.StringUtils;
 
 import java.awt.*;
 import java.awt.Image;
@@ -20,32 +19,76 @@ import java.util.ArrayList;
  */
 public class PdfPages {
 
-    public static void createPage(String pdfFilePath, String... imageUrl) throws IOException, DocumentException {
+    public static void createPages(String newPdfFile, String... pdfFiles) throws IOException, DocumentException {
+        // get last pdfFile to merge as the newPdfFile
+        String lastPdfFile = pdfFiles[pdfFiles.length-1];
+
+        String firstPdfFile = null;
+        for(String url : pdfFiles) {
+            if(firstPdfFile==null){
+                firstPdfFile = url;
+                continue;
+            }
+
+            String latestNewPdf = newPdfFile;
+            if(!url.equals(lastPdfFile)){
+                File tmp = File.createTempFile("ppg", ".tmp", new File("."));
+                latestNewPdf = tmp.getCanonicalPath();
+            }
+            mergePdfPages(latestNewPdf, firstPdfFile, url);
+            firstPdfFile = latestNewPdf;
+        }
+    }
+
+    /**
+     * create image pages only
+     * @param pdfFilePath
+     * @param imageUrls
+     * @throws IOException
+     * @throws DocumentException
+     */
+    public static void createImagesPages(String pdfFilePath, String... imageUrls) throws IOException, DocumentException {
         // create empty PdfReader
         Document document = new Document(PageSize.A4);
         PdfWriter pdfWriter = PdfWriter.getInstance(document, new FileOutputStream(pdfFilePath));
         document.open();
 
-        PdfContentByte canvas = pdfWriter.getDirectContent();
-        for (String url : imageUrl) {
+        for (String url : imageUrls) {
+            System.out.println(url);
             document.newPage();
+            PdfContentByte canvas = pdfWriter.getDirectContent();
             addImage(canvas, url);
         }
 
         document.close();
     }
 
+    /**
+     * insert pages ahead the first page
+     * @param pdfFilePath
+     * @param fileUrls
+     * @throws IOException
+     * @throws DocumentException
+     */
     public static void insertPage(String pdfFilePath, String... fileUrls) throws IOException, DocumentException {
         PdfReader reader = new PdfReader(pdfFilePath);
         String newPdfFile = StringUtils.removeExtension(pdfFilePath) + "-new.pdf";
+
         addPage(reader, 1, newPdfFile, fileUrls);
     }
 
+    /**
+     * append the new pages to the end of the pdf file
+     * @param pdfFilePath
+     * @param fileUrls
+     * @throws IOException
+     * @throws DocumentException
+     */
     public static void addPage(String pdfFilePath, String... fileUrls) throws IOException, DocumentException {
         PdfReader reader = new PdfReader(pdfFilePath);
-        int newPages = reader.getNumberOfPages() + 1;
         String newPdfFile = StringUtils.removeExtension(pdfFilePath) + "-new.pdf";
 
+        int newPages = reader.getNumberOfPages() + 1;
         addPage(reader, newPages, newPdfFile, fileUrls);
     }
 
@@ -66,10 +109,10 @@ public class PdfPages {
         for (String url : fileUrls) {
             stamper.insertPage(pageNumber, pageSize);
 
-            PdfContentByte canvas = stamper.getOverContent(pageNumber);
             if(url.endsWith(".pdf")){
                 addPdfFilePages(reader, stamper, url);
             }else {
+                PdfContentByte canvas = stamper.getOverContent(pageNumber);
                 addImage(canvas, url);
             }
         }
@@ -97,23 +140,46 @@ public class PdfPages {
         canvas.addImage(image);
     }
 
+
+
+    public static  void  mergePdfPages(String newPdfFile, String... pdfFiles) throws IOException, DocumentException {
+
+
+    }
+
     /**
      * merge all pages for two pdf files
      * @param pdfFilePath
      * @param mergePdfFile
      */
     public static  void  mergePdfPages(String pdfFilePath, String mergePdfFile) throws IOException, DocumentException {
+        String newPdfFile = StringUtils.removeExtension(pdfFilePath) + "-new.pdf";
+        mergePdfPages(newPdfFile, pdfFilePath, mergePdfFile);
+    }
+
+    /**
+     * merge two pdf files into a new pdf file
+     * @param newPdfFile
+     * @param pdfFilePath
+     * @param mergePdfFile
+     * @throws IOException
+     * @throws DocumentException
+     */
+    public static  void  mergePdfPages(String newPdfFile, String pdfFilePath, String mergePdfFile) throws IOException, DocumentException {
         PdfReader reader = new PdfReader(pdfFilePath);
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(newPdfFile));
+
         PdfReader mergeReader = new PdfReader(mergePdfFile);
         int mergePdfNumbers = mergeReader.getNumberOfPages();
 
-        String newPdfFile = StringUtils.removeExtension(pdfFilePath) + "-new.pdf";
-
-        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(newPdfFile));
         int newPages = reader.getNumberOfPages() + 1;
 
         for(int index=1; index<=mergePdfNumbers; index++) {
             Rectangle pageSize = mergeReader.getPageSize(index);
+            int r = pageSize.getRotation();
+            pageSize.setRotation(90);
+            int r1= pageSize.getRotation();
+
             stamper.insertPage(newPages, pageSize);
 
             PdfImportedPage mergePage = stamper.getImportedPage(mergeReader, index);
@@ -123,8 +189,11 @@ public class PdfPages {
 
         stamper.close();
         reader.close();
+
+        // must be closed last
         mergeReader.close();
     }
+
 
     /**
      * 增加一个pdf文件

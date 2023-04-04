@@ -3,11 +3,11 @@ package com.jfeat.pdf.pages;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.jfeat.pdf.pages.util.ImageUtil;
-import com.jfeat.pdf.pages.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -20,33 +20,35 @@ public class Generator {
         System.out.println("       ");
         System.out.println("Page range support 1,2 [3-5], -1 mean last page.");
         System.out.println("OPTIONS:");
-        System.out.println(" -M,--Merge  merge two pdf into one pdf file");
-        System.out.println("             e.g. pdf-page <source> -M <page2.pdf>");
-        System.out.println(" -m,--merge  merge two pages into one page");
-        System.out.println("             e.g. pdf-page <source> -m <page2.pdf>");
-        System.out.println(" -a,--all    push all files (type of image/pdf) within path into one pdf file");
-        System.out.println("             e.g. pdf-page <source> -a <image-dir|pdf-dir>");
-        System.out.println(" -h,--head   Head with images/pages.");
-        System.out.println("             e.g. pdf-page <source> -h <image-url|image-dir|pages.pdf>");
-        System.out.println(" -t,--tail   Tail up images/pages");
-        System.out.println("             e.g. pdf-page <source> -t <image-url|image-dir|pages.pdf>");
-        System.out.println(" -p,--pick   Pick up the range pages as new file.(page-range format: 1:2)");
-        System.out.println("             e.g. pdf-page <source> -p <page-range>");
-        System.out.println(" -d,--delete Delete page.");
-        System.out.println("             e.g. pdf-page <source> -d <page-range>");
-        System.out.println(" -s,--split  Split the .pdf into multi ones with certain number of pages.");
-        System.out.println("             e.g. pdf-page <source> -s <pages>");
-        System.out.println(" -c,--cover  Cover specific area on page.");
-        System.out.println("             e.g. pdf-page <source> -c <page-number> <pos> <size>");
-        System.out.println(" -r,--ruler  Draw a ruler on page.");
-        System.out.println("             e.g. pdf-page <source> -r <page-number>");
-        System.out.println(" -T,--text   Draw text on page.");
-        System.out.println("             e.g. pdf-page <source> -t <page-number> <posx> <posy> <text> <LEFT|CENTER|RIGHT> <fontSize> [fontFamily]");
-        System.out.println(" -n,--number Number the page.");
-        System.out.println("             e.g. pdf-page <source> -n <page-number>");
+        System.out.println(" -a,--all     push all image files within path into a new single pdf file");
+        System.out.println("              e.g. pdf-page <new.pdf> -i <image-dir>");
+        System.out.println(" -A,--path    Combine all files (type of pdf) within path into single pdf file");
+        System.out.println("              e.g. pdf-page <new.pdf> -C <pdf-dir>");
+        System.out.println(" -m,--merge   merge two .pdf files into one pdf file");
+        System.out.println("              e.g. pdf-page <source> -m <page2.pdf>");
+        System.out.println(" -h,--head    Head with images/pages.");
+        System.out.println("              e.g. pdf-page <source> -h <image-url|image-dir|pages.pdf>");
+        System.out.println(" -t,--tail    Tail up images/pages");
+        System.out.println("              e.g. pdf-page <source> -t <image-url|image-dir|pages.pdf>");
+        System.out.println(" -p,--pick    Pick up the range pages as new file.(page-range format: 1:2)");
+        System.out.println("              e.g. pdf-page <source> -p <page-range>");
+        //System.out.println(" -u,--under   overlay one page onto another page");
+        //System.out.println("              e.g. pdf-page <source> -o <page2.pdf>");
+        System.out.println(" -d,--delete  Delete page.");
+        System.out.println("              e.g. pdf-page <source> -d <page-range>");
+        System.out.println(" -s,--split   Split the .pdf into multi ones with certain number of pages.");
+        System.out.println("              e.g. pdf-page <source> -s <pages>");
+        System.out.println(" -c,--cover   Cover specific area on page.");
+        System.out.println("              e.g. pdf-page <source> -c <page-number> <pos> <size>");
+        System.out.println(" -r,--ruler   Draw a ruler on page.");
+        System.out.println("              e.g. pdf-page <source> -r <page-number>");
+        System.out.println(" -T,--text    Draw text on page.");
+        System.out.println("              e.g. pdf-page <source> -t <page-number> <posx> <posy> <text> <LEFT|CENTER|RIGHT> <fontSize> [fontFamily]");
+        System.out.println(" -n,--number  Number the page.");
+        System.out.println("              e.g. pdf-page <source> -n <page-number>");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //args = new String[]{"C:\\Users\\vincent\\Desktop\\就业政策综合培训通知.pdf","-r","5"};
         //args = new String[]{"C:\\Users\\vincent\\Desktop\\就业政策综合培训通知.pdf","-T","5","230","530","GZ","LEFT","12","宋体"};
         if (args == null || (args.length < 3)) {
@@ -65,12 +67,16 @@ public class Generator {
         String param = args.length > 2 ? args[2] : null;
         String param2 = args.length > 3 ? args[3] : null;
 
+        System.out.println(new File(".").getCanonicalPath());
+
+
         try {
-            if (op.equals("-M") || op.equals("--Merge")){
+            if (op.equals("-m") || op.equals("--merge")){
                 String mergePdf = param;
                 PdfPages.mergePdfPages(pdfFilePath, mergePdf);
 
-            } else if (op.equals("-m") || op.equals("--merge")) {
+
+            } else if (op.equals("-u") || op.equals("--under")) {
                 String mergePdf = param;
                 String rangePick = param2;
                 if (rangePick == null) {
@@ -97,8 +103,10 @@ public class Generator {
                     return;
                 }
 
-            } else if (op.equals("-a") || op.equals("--all")) {
+            } else if (op.equals("-a") || op.equals("--all") || op.equals("-A") || op.equals("-path")) {
                 String url = param;
+                boolean is_image_param =   op.equals("-a")  || op.equals("--all");
+                boolean is_pdf_param =   op.equals("-A")  || op.equals("--path");
 
                 List<String> fileUrls = new ArrayList<>();
                 boolean isFromWeb = ImageUtil.isFromWeb(url);
@@ -114,9 +122,13 @@ public class Generator {
                             if(!filename.contains(".")) continue;
 
                             String ext = filename.substring(filename.indexOf("."));
-                            if(ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg") || ext.equals(".pdf")) {
+                            if(
+                                    (is_image_param && (ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg"))) ||
+                                    (is_pdf_param && ext.equals(".pdf"))
+                            ) {
                                 if (f.isFile()) {
-                                    fileUrls.add(f.getAbsolutePath());
+                                    System.out.println(f.getCanonicalPath().replace(new File(url).getCanonicalPath(), ""));
+                                    fileUrls.add(f.getCanonicalPath());
                                 }
                             }
                         }
@@ -129,11 +141,28 @@ public class Generator {
                     System.out.println("fatal: image file not exists: " + url);
                     return;
                 }
+                if(fileUrls==null || fileUrls.size()==0){
+                    return;
+                }
+
+                //sort by name
+                fileUrls.sort(new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return o1.compareToIgnoreCase(o2);
+                    }
+                });
 
                 if(new File(pdfFilePath).exists()){
-                    PdfPages.insertPage(pdfFilePath, fileUrls.toArray(new String[0]));
-                }else{
-                    PdfPages.createPage(pdfFilePath, fileUrls.toArray(new String[0]));
+                    PdfPages.addPage(pdfFilePath, fileUrls.toArray(new String[0]));
+                }else {
+                    if(fileUrls.get(0).endsWith(".pdf")){
+                        // get the first pdf file as the source file
+                        //String firstPdfFile = fileUrls.remove(0);
+                        PdfPages.createPages(pdfFilePath, fileUrls.toArray(new String[0]));
+                    }else {
+                        PdfPages.createImagesPages(pdfFilePath, fileUrls.toArray(new String[0]));
+                    }
                 }
 
             } else if (op.equals("-h") || op.equals("--head")) {
@@ -193,7 +222,7 @@ public class Generator {
                 if (f.exists()) {
                     PdfPages.addPage(pdfFilePath, imageUrls.toArray(new String[0]));
                 } else {
-                    PdfPages.createPage(pdfFilePath, imageUrls.toArray(new String[0]));
+                    PdfPages.createImagesPages(pdfFilePath, imageUrls.toArray(new String[0]));
                 }
 
             }else if(op.equals("-n") || op.equals("--number")){
