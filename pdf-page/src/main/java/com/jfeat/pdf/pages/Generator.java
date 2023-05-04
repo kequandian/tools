@@ -20,10 +20,8 @@ public class Generator {
         System.out.println("       ");
         System.out.println("Page range support 1,2 [3-5], -1 mean last page.");
         System.out.println("OPTIONS:");
-        System.out.println(" -a,--all     push all image files within path into a new single pdf file");
-        System.out.println("              e.g. pdf-page <new.pdf> -i <image-dir>");
-        System.out.println(" -A,--path    Combine all files (type of pdf) within path into single pdf file");
-        System.out.println("              e.g. pdf-page <new.pdf> -C <pdf-dir>");
+        System.out.println(" -a,--all     push all image or .pdf files within path into a new single pdf file");
+        System.out.println("              e.g. pdf-page <new.pdf> -a <image-dir|pdf-dir>");
         System.out.println(" -m,--merge   merge two .pdf files into one pdf file");
         System.out.println("              e.g. pdf-page <source> -m <page2.pdf>");
         System.out.println(" -h,--head    Head with images/pages.");
@@ -67,8 +65,7 @@ public class Generator {
         String param = args.length > 2 ? args[2] : null;
         String param2 = args.length > 3 ? args[3] : null;
 
-        System.out.println(new File(".").getCanonicalPath());
-
+        //System.out.println(new File(".").getCanonicalPath());
 
         try {
             if (op.equals("-m") || op.equals("--merge")){
@@ -103,10 +100,10 @@ public class Generator {
                     return;
                 }
 
-            } else if (op.equals("-a") || op.equals("--all") || op.equals("-A") || op.equals("-path")) {
+            } else if (op.equals("-a") || op.equals("--all")) {
                 String url = param;
-                boolean is_image_param =   op.equals("-a")  || op.equals("--all");
-                boolean is_pdf_param =   op.equals("-A")  || op.equals("--path");
+//                boolean is_image_param =   op.equals("-a")  || op.equals("--all");
+//                boolean is_pdf_param =   op.equals("-A")  || op.equals("--path");
 
                 List<String> fileUrls = new ArrayList<>();
                 boolean isFromWeb = ImageUtil.isFromWeb(url);
@@ -117,17 +114,19 @@ public class Generator {
                 } else if (checkFile.exists()) {
                     if (checkFile.isDirectory()) {
                         File[] listOfFiles = checkFile.listFiles();
+
+
                         for (File f : listOfFiles) {
                             String filename = f.getName();
                             if(!filename.contains(".")) continue;
 
                             String ext = filename.substring(filename.indexOf("."));
                             if(
-                                    (is_image_param && (ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg"))) ||
-                                    (is_pdf_param && ext.equals(".pdf"))
+                                    ((ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg"))) ||
+                                    (ext.equals(".pdf"))
                             ) {
                                 if (f.isFile()) {
-                                    System.out.println(f.getCanonicalPath().replace(new File(url).getCanonicalPath(), ""));
+                                    //System.out.println(f.getCanonicalPath().replace(new File(url).getCanonicalPath(), ""));
                                     fileUrls.add(f.getCanonicalPath());
                                 }
                             }
