@@ -122,8 +122,8 @@ public class Generator {
 
                             String ext = filename.substring(filename.indexOf("."));
                             if(
-                                    ((ext.equals(".png") || ext.equals(".jpg") || ext.equals(".jpeg"))) ||
-                                    (ext.equals(".pdf"))
+                                    ((ext.endsWith(".png") || ext.endsWith(".jpg") || ext.endsWith(".jpeg"))) ||
+                                    (ext.endsWith(".pdf"))
                             ) {
                                 if (f.isFile()) {
                                     //System.out.println(f.getCanonicalPath().replace(new File(url).getCanonicalPath(), ""));
