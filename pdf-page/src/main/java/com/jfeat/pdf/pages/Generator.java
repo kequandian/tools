@@ -251,8 +251,10 @@ public class Generator {
                         int pi = Integer.parseInt(nums[i]);
                         range_num[i] = pi;
                     }
-                } else if (range.contains("-") && range.indexOf("-") > 0) {
-                    String[] nums = range.split("-");
+                } else if ( (range.contains("-") && range.indexOf("-") > 0) ||
+                            (range.contains(":") && range.indexOf(":") > 0)
+                          ) {
+                    String[] nums = range.contains(":")? range.split(":") : range.split("-");
 
                     int starti = Integer.parseInt(nums[0]);
                     int endi = Integer.parseInt(nums[1]);
@@ -280,8 +282,9 @@ public class Generator {
                         int pi = Integer.parseInt(nums[i]);
                         range_num[i] = pi;
                     }
-                } else if (range.contains("-") && range.indexOf("-") > 0) {
-                    String[] nums = range.split("-");
+                } else if ( (range.contains("-") && range.indexOf("-") > 0) ||
+                            (range.contains(":") && range.indexOf(":") > 0) ) {
+                    String[] nums = range.contains(":")?range.split(":") : range.split("-");
 
                     int starti = Integer.parseInt(nums[0]);
                     int endi = Integer.parseInt(nums[1]);

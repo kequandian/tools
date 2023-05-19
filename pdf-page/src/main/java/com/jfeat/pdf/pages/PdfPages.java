@@ -175,11 +175,13 @@ public class PdfPages {
             int r1= pageSize.getRotation();
 
             stamper.insertPage(newPages, pageSize);
-            newPages++;
 
             PdfImportedPage mergePage = stamper.getImportedPage(mergeReader, index);
             PdfContentByte background = stamper.getOverContent(newPages);
             background.addTemplate(mergePage, 0, 0);
+
+            // num of pages has changed
+            newPages++;
         }
 
         stamper.close();
