@@ -72,34 +72,6 @@ public class Generator {
                 String mergePdf = param;
                 PdfPages.mergePdfPages(pdfFilePath, mergePdf);
 
-
-            } else if (op.equals("-u") || op.equals("--under")) {
-                String mergePdf = param;
-                String rangePick = param2;
-                if (rangePick == null) {
-                    rangePick = "1:1";
-                }
-
-                if (!rangePick.contains(":")) {
-                    printUsage();
-                    return;
-                }
-                String[] ranges = rangePick.split(":");
-                if (ranges.length != 2) {
-                    printUsage();
-                    return;
-                }
-
-                try {
-                    int num1 = Integer.parseInt(ranges[0]);
-                    int num2 = Integer.parseInt(ranges[1]);
-
-                    PdfPages.mergePages(pdfFilePath, num1, mergePdf, num2);
-                } catch (NumberFormatException e) {
-                    printUsage();
-                    return;
-                }
-
             } else if (op.equals("-a") || op.equals("--all")) {
                 String url = param;
 //                boolean is_image_param =   op.equals("-a")  || op.equals("--all");
@@ -328,8 +300,34 @@ public class Generator {
             } else if (op.equals("-s") || op.equals("--split")) {
                 int number_page = Integer.parseInt(param);
                 PdfPages.splitPage(pdfFilePath, number_page);
-            }
 
+            } else if (op.equals("-u") || op.equals("--under")) {
+                String mergePdf = param;
+                String rangePick = param2;
+                if (rangePick == null) {
+                    rangePick = "1:1";
+                }
+
+                if (!rangePick.contains(":")) {
+                    printUsage();
+                    return;
+                }
+                String[] ranges = rangePick.split(":");
+                if (ranges.length != 2) {
+                    printUsage();
+                    return;
+                }
+
+                try {
+                    int num1 = Integer.parseInt(ranges[0]);
+                    int num2 = Integer.parseInt(ranges[1]);
+
+                    PdfPages.mergePages(pdfFilePath, num1, mergePdf, num2);
+                } catch (NumberFormatException e) {
+                    printUsage();
+                    return;
+                }
+            }
         } catch (NumberFormatException e) {
             System.out.println("fatal: invalid page-num: " + args[1]);
         } catch (IOException e) {

@@ -96,7 +96,7 @@ public class PdfPages {
      * add image page or merge pdf page
      * @param reader
      * @param pageNumber
-     * @param newPdfFile
+     * @param newPdfFile  generate a new pdf file
      * @param fileUrls
      * @throws IOException
      * @throws DocumentException
@@ -141,12 +141,6 @@ public class PdfPages {
     }
 
 
-
-    public static  void  mergePdfPages(String newPdfFile, String... pdfFiles) throws IOException, DocumentException {
-
-
-    }
-
     /**
      * merge all pages for two pdf files
      * @param pdfFilePath
@@ -181,6 +175,7 @@ public class PdfPages {
             int r1= pageSize.getRotation();
 
             stamper.insertPage(newPages, pageSize);
+            newPages++;
 
             PdfImportedPage mergePage = stamper.getImportedPage(mergeReader, index);
             PdfContentByte background = stamper.getOverContent(newPages);
@@ -193,6 +188,7 @@ public class PdfPages {
         // must be closed last
         mergeReader.close();
     }
+
 
 
     /**
